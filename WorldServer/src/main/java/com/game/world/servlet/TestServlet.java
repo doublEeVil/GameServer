@@ -1,5 +1,6 @@
 package com.game.world.servlet;
 
+import com.game.common.util.PrintUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,8 +15,9 @@ public class TestServlet extends HttpServlet {
     private static Logger log = LogManager.getLogger(TestServlet.class);
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.info(" this is ...");
-        resp.getWriter().write(" tttt ");
+        log.info(" ts  dhh ...");
+        resp.getWriter().write(" tjjjttt ");
+        PrintUtils.printStr();
     }
 
     @Override

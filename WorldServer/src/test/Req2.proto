@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package procol;
+
+option java_package = "com.game.world.procol";
+option java_outer_classname = "Req2Protos";
+
+message Req2 {
+	required string id1 = 1;
+	required int32 id2 = 2;
+	required string name = 3;
+}

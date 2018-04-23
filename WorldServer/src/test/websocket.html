@@ -1,0 +1,82 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<script type="text/javascript">
+	var ws = new WebSocket("ws://10.16.28.172:8081/ws");
+	ws.onopen = function()
+	{
+	  console.log("open");
+	  ws.send("hello");
+	};
+	ws.onmessage = function(evt)
+	{
+	  console.log(evt.data)
+	};
+	ws.onclose = function(evt)
+	{
+	  console.log("WebSocketClosed!");
+	};
+	ws.onerror = function(evt)
+	{
+	  console.log("WebSocketError!");
+	};
+
+</script>
+
+</body>
+</html> -->
+
+<html>
+<head></head>
+<body>
+	<script src="protobuf.js"></script>
+	<script type="text/javascript">
+		var sock = null;
+		var wsuri = "ws://127.0.0.1:9001/ws";
+
+		window.onload = function() {
+
+			console.log("onload");
+
+			sock = new WebSocket(wsuri);
+
+			sock.onopen = function() {
+				console.log("connected to " + wsuri);
+
+				var WSMessage;
+        		var wsmessage;
+        		var buffer;
+        		protobuf.load("Req1.proto", function (err, root) {
+		            if (err) throw err;
+		            WSMessage = root.lookup("procol.Req1");
+		            wsmessage = WSMessage.create({ id: "1", content: "hello", sender: "web", time: new Date().getTime() });
+		            buffer = WSMessage.encode(wsmessage).finish();
+		        });
+			}
+
+			sock.onclose = function(e) {
+				console.log("connection closed (" + e.code + ")");
+			}
+
+			sock.onmessage = function(e) {
+				console.log("message received: " + e.data);
+			}
+		};
+
+		function send() {
+			var msg = document.getElementById('message').value;
+			sock.send(msg);
+		};
+	</script>
+	<h1>WebSocket Echo Test</h1>
+	<form>
+		<p>
+			Message: <input id="message" type="text" value="Hello, world!">
+		</p>
+	</form>
+	<button onclick="send();">Send Message</button>
+</body>
+</html>

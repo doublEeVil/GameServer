@@ -18,17 +18,17 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
-        if (frame instanceof TextWebSocketFrame) {
-            TextWebSocketFrame tf = (TextWebSocketFrame) frame;
-            //System.out.println(tf.text());
-            //ctx.writeAndFlush(new TextWebSocketFrame(tf.text() + " "));
-            JSONObject json = JSONObject.fromObject(tf.text());
-            int playerId = IDataHandler.channelPlayerIdMap.getOrDefault(ctx.channel(), 0);
-            WorldPlayer player = (WorldPlayer)CacheService.getObj(WorldPlayer.class, playerId);
-            IData data = decode(json);
-            data.setChannel(ctx.channel());
-            ProcolFactory.getDataHandler(json.getInt("id")).handle(player, data);
-        }
+//        if (frame instanceof TextWebSocketFrame) {
+//            TextWebSocketFrame tf = (TextWebSocketFrame) frame;
+//            //System.out.println(tf.text());
+//            //ctx.writeAndFlush(new TextWebSocketFrame(tf.text() + " "));
+//            JSONObject json = JSONObject.fromObject(tf.text());
+//            int playerId = IDataHandler.channelPlayerIdMap.getOrDefault(ctx.channel(), 0);
+//            WorldPlayer player = (WorldPlayer)CacheService.getObj(WorldPlayer.class, playerId);
+//            IData data = decode(json);
+//            data.setChannel(ctx.channel());
+//            ProcolFactory.getDataHandler(json.getInt("id")).handle(player, data);
+//        }
     }
 
     private IData decode(JSONObject json) {

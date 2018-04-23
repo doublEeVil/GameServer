@@ -29,6 +29,7 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
         pip.addLast(new HttpServerCodec());
         pip.addLast(new HttpObjectAggregator(65535));
         pip.addLast(new WebSocketServerProtocolHandler(WEBSOCKET_PATH, null, true));
+        //pip.addLast(new WebSocketFrameHandler());
         pip.addLast(new WebSocketToProtobufDecoder()); // 收到消息时，先将websocket解码成自定义包
         pip.addLast(new CustomProtobufDecoder()); //将自定义包解码成具体的protobuf
         pip.addLast(new ProtobufToWebSocketEncoder()); // 发送消息时将自定义包编码成websocket
