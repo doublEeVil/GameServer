@@ -2,17 +2,17 @@ package com.game.world;
 
 
 import com.game.world.config.ServerConfig;
+import com.game.world.game.handler.account.LoginHandler;
+import com.game.world.game.handler.test.TestHandler;
 import com.game.world.net.ServerInitializer;
+import com.game.world.procol.ProcolFactory;
 import com.game.world.servlet.TestServlet;
 import com.game.world.thread.ShutdownThread;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.EventLoop;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoop;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.nio.SelectChannelConnector;
@@ -20,11 +20,13 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
 
 public class WorldServer {
-    ServerConfig serverConfig; // 服务器配置
+    private ServerConfig serverConfig; // 服务器配置
+    private final EventLoopGroup boss = new NioEventLoopGroup(1);
+    private final EventLoopGroup worker = new NioEventLoopGroup();
+    private ChannelFuture channelFuture;
 
     public static void main(String[] args) throws Exception{
         new WorldServer().launch();
-
     }
 
     public void launch() throws Exception {
@@ -69,7 +71,8 @@ public class WorldServer {
     }
 
     private void initProcol() {
-
+        ProcolFactory.register(10001, new LoginHandler());
+        ProcolFactory.register(20001, new TestHandler());
     }
 
     private void initEvent() {
@@ -77,18 +80,28 @@ public class WorldServer {
     }
 
     private void initNetwork() throws Exception{
-        EventLoopGroup boss = new NioEventLoopGroup(1);
-        EventLoopGroup worker = new NioEventLoopGroup();
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(boss, worker)
              .childHandler(new ServerInitializer())
              .channel(NioServerSocketChannel.class);
-            Channel ch = b.bind(serverConfig.getServerPort()).sync().channel();
-            //ch.closeFuture().sync();
+            channelFuture = b.bind(serverConfig.getServerPort()).sync();
         } finally {
-            //boss.shutdownGracefully();
-            //worker.shutdownGracefully();
+            Runtime.getRuntime().addShutdownHook(new Thread(()->{
+                shutdownNet();
+            }));
+        }
+    }
+
+    private void shutdownNet(){
+        if (channelFuture != null) {
+            channelFuture.channel().close().syncUninterruptibly();
+        }
+        if (boss != null) {
+            boss.shutdownGracefully();
+        }
+        if (worker != null) {
+            worker.shutdownGracefully();
         }
     }
 
