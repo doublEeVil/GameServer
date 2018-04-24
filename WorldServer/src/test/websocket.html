@@ -125,7 +125,7 @@
             data[2] = 0xff & (len >> 8);
             data[3] = 0xff & len;
 
-            data[4] = 0;
+            data[4] = -88;
             data[5] = 0xff & (type >> 8);
             data[6] = 0xff & type;
             return data;

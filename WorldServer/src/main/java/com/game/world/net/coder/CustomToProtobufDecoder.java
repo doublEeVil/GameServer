@@ -18,36 +18,17 @@ import java.util.List;
 public class CustomToProtobufDecoder extends ByteToMessageDecoder{
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-//        byte[] data = null;
-//        int len = in.readableBytes();
-//        ByteBuf bodyByteBuf = in.readBytes(len);
-//        if (bodyByteBuf.hasArray()) {
-//            data = in.array();
-//        } else {
-//            data = new byte[len];
-//            bodyByteBuf.getBytes(bodyByteBuf.readerIndex(), data, 0, len);
-//        }
-//        long t1 = System.nanoTime();
-//        Req1Protos.Req1 req1 = Req1Protos.Req1.getDefaultInstance().getParserForType().parseFrom(data);
-//        System.out.println(req1.getEmail()
-//                + " " + req1.getName()
-//                + " " + req1.getId());
-//
-//        long t2 = System.nanoTime();
-//        System.out.println(t2 - t1);// 大概0.1到0.3毫秒的样子
-//        // 已完成解码
-//
-//        // 测试发送
-//        ctx.channel().writeAndFlush(req1);
-//
-//        if (true) {
-//            return;
-//        }
         while (in.readableBytes() > 7) { // 可读部分小于7，直接退出
             in.markReaderIndex();
 
             int length = in.readInt(); // protobuf长度
-            in.readByte(); // 保留位
+            System.out.println("len : " + length);
+            byte flag = in.readByte(); // 保留位
+            if (flag != -88) {
+                //整个包是有问题的，废弃这个包
+                in.release();
+                return;
+            }
             short dataType = in.readShort();
             if (in.readableBytes() < length) { //可读部分小于body，恢复读指针
                 in.resetReaderIndex();

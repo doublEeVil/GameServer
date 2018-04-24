@@ -1,5 +1,6 @@
 package com.game.world.net;
 
+import com.game.world.procol.Req1Protos;
 import com.google.protobuf.MessageLite;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -18,6 +19,9 @@ public class ServerHandler extends SimpleChannelInboundHandler<MessageLite> {
     protected void channelRead0(ChannelHandlerContext ctx, MessageLite msg) throws Exception {
         // 消息处理
         System.out.println("--- rcv ---" + msg.getClass());
+        if (msg instanceof Req1Protos.Req1) {
+            System.out.println(((Req1Protos.Req1) msg).getEmail());
+        }
     }
 
     @Override
