@@ -17,7 +17,6 @@ public class TestServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info(" ts  dhh ...");
         resp.getWriter().write(" tjjjttt ");
-        PrintUtils.printStr();
     }
 
     @Override

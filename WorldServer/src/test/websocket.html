@@ -32,10 +32,18 @@
 <html>
 <head></head>
 <body>
-	<script src="protobuf.js"></script>
+
+<!--<script src="./js/Long.min.js"></script>-->
+<!--<script src="./js/ByteBufferAB.min.js"></script>-->
+<!--<script src="./js/ProtoBuf.min.js"></script>-->
+<script src="./js/protobuf.js"></script>
 	<script type="text/javascript">
 		var sock = null;
-		var wsuri = "ws://127.0.0.1:9001/ws";
+		var wsuri = "ws://127.0.0.1:8001/ws";
+
+        var WSMessage;
+        var wsmessage;
+        var buffer;
 
 		window.onload = function() {
 
@@ -45,11 +53,7 @@
 
 			sock.onopen = function() {
 				console.log("connected to " + wsuri);
-
-				var WSMessage;
-        		var wsmessage;
-        		var buffer;
-        		protobuf.load("Req1.proto", function (err, root) {
+                protobuf.load("Req1.proto", function (err, root) {
 		            if (err) throw err;
 		            WSMessage = root.lookup("procol.Req1");
 		            wsmessage = WSMessage.create({ id: "1", content: "hello", sender: "web", time: new Date().getTime() });
@@ -61,15 +65,71 @@
 				console.log("connection closed (" + e.code + ")");
 			}
 
-			sock.onmessage = function(e) {
-				console.log("message received: " + e.data);
+			sock.onmessage = function(evt) {
+				console.log("message received: " + evt.data);
+                var reader = new FileReader();
+                reader.readAsArrayBuffer(evt.data);
+                reader.onload = function (e) {
+                    var buf = new Uint8Array(reader.result);
+                    console.log(reader.result);
+                    console.log(WSMessage.decode(buf));
+                }
 			}
 		};
 
 		function send() {
 			var msg = document.getElementById('message').value;
 			sock.send(msg);
+
+            var WSMessage;
+            var wsmessage;
+            var buffer;
+
+            protobuf.load("./Req1.proto", function (err, root) {
+                if (err) {
+                    console.log("err: ");
+                    console.log(err)
+                }
+                if (root == null) {
+                    return;
+                }
+                WSMessage = root.lookup("procol.Req1");
+                wsmessage = WSMessage.create(
+                    {   name: "zhujinshan",
+                        id: -45688,
+                        email: "89$55"
+                    });
+                buffer = WSMessage.encode(wsmessage).finish();
+                //sock.send(buffer);
+                //console.log("++++ send" + buffer);
+
+                var data = new Int8Array(7 + buffer.length);
+                var head = getHead(buffer.length, 101);
+                console.log("head is " + head);
+                for (var i = 0; i < data.length; i++) {
+                    if (i < 7) {
+                        data[i] = head[i];
+                    } else {
+                        data[i] = buffer[i - 7];
+                    }
+                }
+                sock.send(data);
+                console.log("new send: " + data);
+            });
 		};
+
+		function getHead(len, type) {
+            var data = new Int8Array(7);
+            data[0] = 0xff & (len >> 24);
+            data[1] = 0xff & (len >> 16);
+            data[2] = 0xff & (len >> 8);
+            data[3] = 0xff & len;
+
+            data[4] = 0;
+            data[5] = 0xff & (type >> 8);
+            data[6] = 0xff & type;
+            return data;
+        }
 	</script>
 	<h1>WebSocket Echo Test</h1>
 	<form>

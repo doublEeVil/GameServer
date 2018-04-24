@@ -17,7 +17,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<MessageLite> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MessageLite msg) throws Exception {
         // 消息处理
-        System.out.println("--- rcv ---");
+        System.out.println("--- rcv ---" + msg.getClass());
     }
 
     @Override
