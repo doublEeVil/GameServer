@@ -1,5 +1,6 @@
 package com.game.world.net.coder;
 
+import com.game.world.procol.ProtocolFactory;
 import com.game.world.procol.Req1Protos;
 import com.google.protobuf.MessageLite;
 import io.netty.buffer.ByteBuf;
@@ -20,13 +21,11 @@ public class CustomToProtobufDecoder extends ByteToMessageDecoder{
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         while (in.readableBytes() > 7) { // 可读部分小于7，直接退出
             in.markReaderIndex();
-
             int length = in.readInt(); // protobuf长度
-            System.out.println("len : " + length);
             byte flag = in.readByte(); // 保留位
             if (flag != -88) {
                 //整个包是有问题的，废弃这个包
-                in.release();
+                in.skipBytes(in.readableBytes());
                 return;
             }
             short dataType = in.readShort();
@@ -42,16 +41,13 @@ public class CustomToProtobufDecoder extends ByteToMessageDecoder{
                 array = new byte[length];
                 bodyBuf.getBytes(bodyBuf.readerIndex(), array, 0, length);
             }
-            out.add(decodeBody(dataType, array));
+            MessageLite msg = decodeBody(dataType, array);
+            out.add(msg);
         }
     }
 
     private MessageLite decodeBody(short dataType, byte[] array) throws Exception{
-        MessageLite msg = null;
-        if (dataType == 101) {
-            msg = Req1Protos.Req1.getDefaultInstance().getParserForType().parseFrom(array);
-        }
-        return msg;
+        return ProtocolFactory.getMsg(dataType).getParserForType().parseFrom(array);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.game.world.net.coder;
 
 import com.game.world.net.Packet;
+import com.game.world.procol.ProtocolFactory;
 import com.google.protobuf.MessageLite;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ProtobufToCustomEncoder extends MessageToMessageEncoder<MessageLite> {
     @Override
     protected void encode(ChannelHandlerContext ctx, MessageLite msg, List<Object> out) throws Exception {
-        Packet packet = new Packet((short) 1, msg);
+        Packet packet = new Packet(ProtocolFactory.getMsgHeadId(msg), msg);
         out.add(packet);
     }
 }

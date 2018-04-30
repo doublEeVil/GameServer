@@ -1,24 +1,28 @@
 package com.game.world.net;
 
-import io.netty.channel.Channel;
+import com.google.protobuf.MessageLite;
 
 public class IData {
-    private int playerId;
-    private Channel channel;
+    private MessageLite msg;
+    private boolean handleOver = false;
 
-    public int getPlayerId() {
-        return playerId;
+    public IData(MessageLite msg) {
+        this.msg = msg;
     }
 
-    public void setPlayerId(int playerId) {
-        this.playerId = playerId;
+    public MessageLite getMsg() {
+        return msg;
     }
 
-    public Channel getChannel() {
-        return channel;
+    public void setMsg(MessageLite msg) {
+        this.msg = msg;
     }
 
-    public void setChannel(Channel channel) {
-        this.channel = channel;
+    public boolean isHandleOver() {
+        return handleOver;
+    }
+
+    public void setHandleOver(boolean handleOver) {
+        this.handleOver = handleOver;
     }
 }

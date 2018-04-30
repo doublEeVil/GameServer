@@ -71,8 +71,12 @@
                 reader.readAsArrayBuffer(evt.data);
                 reader.onload = function (e) {
                     var buf = new Uint8Array(reader.result);
-                    console.log(reader.result);
-                    console.log(WSMessage.decode(buf));
+                    console.log(buf);
+                    var head = buf.subarray(0, 7);
+                    var body = buf.subarray(7, buf.length);
+                    console.log(head);
+                    console.log(body);
+                    console.log(WSMessage.decode(body));
                 }
 			}
 		};

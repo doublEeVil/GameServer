@@ -1,11 +1,11 @@
 package com.game.world;
 
-
 import com.game.world.config.ServerConfig;
-import com.game.world.game.handler.account.LoginHandler;
-import com.game.world.game.handler.test.TestHandler;
+import com.game.world.game.service.ServiceManager;
+import com.game.world.net.IDataHandler;
+import com.game.world.net.IHandler;
 import com.game.world.net.ServerInitializer;
-import com.game.world.procol.ProcolFactory;
+import com.game.world.procol.ProtocolFactory;
 import com.game.world.servlet.TestServlet;
 import com.game.world.thread.ShutdownThread;
 import io.netty.bootstrap.ServerBootstrap;
@@ -18,6 +18,8 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
+import org.springframework.context.ApplicationContext;
+import java.util.Map;
 
 public class WorldServer {
     private ServerConfig serverConfig; // 服务器配置
@@ -31,7 +33,10 @@ public class WorldServer {
 
     public void launch() throws Exception {
         System.out.println("----准备启动 world server----");
+        long t1 = System.currentTimeMillis();
         onStart();
+        long t2 = System.currentTimeMillis();
+        System.out.println("===time: " + (t2 - t1) + " ms");
         System.out.println("----world server 启动完成----");
         // 程序退出钩子
         Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownThread()));
@@ -40,7 +45,7 @@ public class WorldServer {
     private void onStart() throws Exception{
         initConfig();
         initServlet();
-        initProcol();
+        initProtocol();
         initEvent();
         initNetwork();
         initService();
@@ -70,15 +75,30 @@ public class WorldServer {
         server.start();
     }
 
-    private void initProcol() {
-        ProcolFactory.register(10001, new LoginHandler());
-        ProcolFactory.register(20001, new TestHandler());
+    /**
+     * 处理协议与Handler的对应关系
+     */
+    private void initProtocol() {
+        ApplicationContext context = ServiceManager.getInstance().getContext();
+        Map<String, Object> beansWithAnnotation = context.getBeansWithAnnotation(IHandler.class);
+        for (Object obj : beansWithAnnotation.values()) {
+            Class clazz = obj.getClass();
+            IHandler handler = (IHandler)clazz.getAnnotation(IHandler.class);
+            ProtocolFactory.register( handler.handData(), (IDataHandler) obj);
+        }
     }
 
+    /**
+     * 处理事件
+     */
     private void initEvent() {
 
     }
 
+    /**
+     * 开启网络层，内部用netty解析
+     * @throws Exception
+     */
     private void initNetwork() throws Exception{
         try {
             ServerBootstrap b = new ServerBootstrap();

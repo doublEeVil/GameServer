@@ -22,7 +22,9 @@ public class CustomToWebSocketEncoder extends MessageToMessageEncoder<Packet> {
     @Override
     protected void encode(ChannelHandlerContext ctx, Packet msg, List<Object> out) throws Exception {
         ByteBuf buf = Unpooled.buffer();
-        //buf.writeShort(msg.getHeadId());
+        buf.writeInt(msg.getBodyMsg().toByteArray().length);
+        buf.writeByte(-88);
+        buf.writeShort(msg.getHeadId());
         buf.writeBytes(msg.getBodyMsg().toByteArray());
         WebSocketFrame frame = new BinaryWebSocketFrame(buf);
         out.add(frame);
