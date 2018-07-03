@@ -6,10 +6,13 @@
     <version>0.0.1</version>
     <packaging>pom</packaging>
     <modules>
-        <module>HotswapAgent</module>
-        <module>CommonUtil</module>
-        <module>WorldServer</module>
-        <module>GateServer</module>
+        <module>m_HotswapAgent</module>
+        <module>m_CommonUtil</module>
+        <module>m_HttpServer</module>
+        <module>m_Cache</module>
+        <module>s_WorldServer</module>
+        <module>s_GateServer</module>
+
     </modules>
     <properties>
         <!--指定Maven用什么编码来读取源码及文档 -->
@@ -24,6 +27,8 @@
         <netty.version>4.1.19.Final</netty.version>
         <spring.version>4.1.5.RELEASE</spring.version>
         <hibernate.version>4.3.8.Final</hibernate.version>
+        <spring.version>4.1.4.RELEASE</spring.version>
+        <jedis.version>2.8.1</jedis.version>
     </properties>
     <dependencies>
         <!-- spring -->
@@ -236,6 +241,46 @@
             <artifactId>protobuf-java</artifactId>
             <version>3.5.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- redis -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${jedis.version}</version>
+        </dependency>
+
+        <!-- Servlet -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
+        <!-- ehcache -->
+        <!-- https://mvnrepository.com/artifact/org.ehcache/ehcache -->
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>3.5.2</version>
+        </dependency>
+
+
     </dependencies>
     <build>
         <plugins>
@@ -248,6 +293,31 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <!-- 将依赖jar打包成单个 -->
+            <!--<plugin>-->
+                <!--<artifactId> maven-assembly-plugin </artifactId>-->
+                <!--<configuration>-->
+                    <!--<descriptorRefs>-->
+                        <!--<descriptorRef>jar-with-dependencies</descriptorRef>-->
+                    <!--</descriptorRefs>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>make-assembly</id>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>single</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--&lt;!&ndash;<outputDirectory>${project.build.directory}/../../_ServerDeploy//lib</outputDirectory>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<overWriteReleases>false</overWriteReleases>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<overWriteSnapshots>false</overWriteSnapshots>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<overWriteIfNewer>true</overWriteIfNewer>&ndash;&gt;-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -259,7 +329,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <outputDirectory>${project.build.directory}/../../_ServerDeploy//lib</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
