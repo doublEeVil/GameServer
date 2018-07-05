@@ -1,9 +1,10 @@
 package com.game.world.bean;
 
+import com.game.cache.mysql.BaseEntity;
 import com.game.world.net.IDataHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
-public class WorldPlayer extends BaseEntity{
+public class WorldPlayer extends BaseEntity {
     private int playerId;
 
     public int getPlayerId() {

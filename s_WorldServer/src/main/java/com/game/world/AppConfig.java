@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ImportResource;
  */
 
 @Configuration
-@ImportResource("spring.xml")
+@ImportResource({"spring.xml"})
 public class AppConfig {
 
 }

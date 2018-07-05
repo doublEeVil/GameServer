@@ -16,7 +16,7 @@
         <!--这个输出控制台的配置 -->
         <Console name="Console" target="SYSTEM_OUT">
             <!-- 控制台只输出level及以上级别的信息(onMatch),其他的直接拒绝(onMismatch) -->
-            <ThresholdFilter level="trace" onMatch="ACCEPT"
+            <ThresholdFilter level="WARN" onMatch="ACCEPT"
                              onMismatch="DENY" />
             <!-- 输出日志的格式 -->
             <!--
@@ -80,7 +80,29 @@
             <Policies>
                 <!-- log4j2的按分钟 分日志文件 : warn-%d{yyyy-MM-dd-HH-mm}-%i.log-->
                 <TimeBasedTriggeringPolicy interval="1" modulate="true" />
-                <!-- <SizeBasedTriggeringPolicy size="10 MB" /> -->
+                <SizeBasedTriggeringPolicy size="10 MB" />
+            </Policies>
+        </RollingFile>
+
+        <!-- 特殊log记录 -->
+        <NoSql name="databaseAppender">
+            <MongoDb databaseName="test"
+                     collectionName="logData"
+                     server="127.0.0.1"
+                     port="27017"
+                     userName="root"
+                     password="password"/>
+        </NoSql>
+
+        <RollingFile name="GameData" fileName="${ERROR_LOG_FILE_NAME}/game_data.log"
+                     filePattern="${ERROR_LOG_FILE_NAME}/$${date:yyyy-MM}/error-%d{yyyy-MM-dd-HH-mm}-%i.log">
+            <ThresholdFilter level="info" onMatch="ACCEPT"
+                             onMismatch="DENY" />
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+            <Policies>
+                <!-- log4j2的按分钟 分日志文件 : warn-%d{yyyy-MM-dd-HH-mm}-%i.log-->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="10 MB" />
             </Policies>
         </RollingFile>
 
@@ -100,6 +122,9 @@
         <logger name="org.jboss.netty" level="warn" />
         <logger name="org.apache.http" level="warn" />
 
+        <Logger name="com.*.*" level="debug">
+            <appender-ref ref="databaseAppender"/>
+        </Logger>
 
         <!-- 配置日志的根节点 -->
         <root level="all">
@@ -108,6 +133,8 @@
             <appender-ref ref="RollingFileWarn"/>
             <appender-ref ref="RollingFileError"/>
         </root>
+
+
 
     </Loggers>
 

@@ -2,8 +2,10 @@ package com.game.world;
 
 import com.game.cache.ehcache.MyCacheManager;
 import com.game.cache.redis.IRedisService;
+import com.game.http.controller.HandleHttp;
 import com.game.http.netty.MyHttpServer;
 import com.game.world.config.ServerConfig;
+import com.game.world.event.EventManager;
 import com.game.world.game.service.ServiceManager;
 import com.game.world.net.IDataHandler;
 import com.game.world.net.IHandler;
@@ -38,6 +40,7 @@ public class WorldServer {
         ctx.register(AppConfig.class);
         ctx.refresh();
         SERVER_CTX = ctx;
+
         // 配置结束
         new WorldServer().launch();
     }
@@ -94,7 +97,7 @@ public class WorldServer {
         //启动两个http 服务
         new Thread(()->{
             try {
-                new MyHttpServer(9000).launch();
+                new MyHttpServer(9000).launch(SERVER_CTX);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -118,7 +121,7 @@ public class WorldServer {
      * 处理事件
      */
     private void initEvent() {
-
+        EventManager.getInstance().initEvent(SERVER_CTX);
     }
 
     /**
@@ -152,11 +155,6 @@ public class WorldServer {
     }
 
     private void initService() {
-        // redis
-        IRedisService redisService = ServiceManager.getInstance().getRedisService();
-        String server_name = redisService.getValue("server_name");
-        System.out.println("server_name is " + server_name);
-
         // cache
         MyCacheManager.initCache();
     }
