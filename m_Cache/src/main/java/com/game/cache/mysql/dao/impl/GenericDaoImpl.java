@@ -129,30 +129,24 @@ public class GenericDaoImpl implements GenericDao {
         this.getSession().flush();
     }
 
+    @Override
+    public <T> List<T> getAll(Class<T> clazz) {
+        Session session = this.getSession();
+        Query query = session.createQuery("from " + clazz.getName());
+        return query.list();
+    }
 
-//    /**
-//     * <contains>
-//     *
-//     * @param t 实体
-//     * @return 是否包含
-//     * @see
-//     */
-//    @Override
-//    public boolean contains(T t) {
-//        return this.getSession().contains(t);
-//    }
-//
-//    /**
-//     * <delete>
-//     * <删除表中的t数据>
-//     *
-//     * @param t 实体
-//     * @see
-//     */
-//    @Override
-//    public void delete(T t) {
-//        this.getSession().delete(t);
-//    }
+    @Override
+    public boolean contains(BaseEntity t) {
+        return this.getSession().contains(t);
+    }
+
+    @Override
+    public void delete(BaseEntity t) {
+        this.getSession().delete(t);
+    }
+
+
 //
 //    /**
 //     * <根据ID删除数据>

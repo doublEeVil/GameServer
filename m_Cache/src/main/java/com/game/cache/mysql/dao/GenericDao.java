@@ -1,5 +1,6 @@
 package com.game.cache.mysql.dao;
 
+import com.game.cache.mysql.BaseEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import java.io.Serializable;
@@ -53,6 +54,15 @@ public interface GenericDao {
 
 
     /**
+     *
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+     <T> List<T> getAll(Class<T> clazz);
+
+
+    /**
      * <update>
      *
      * @param t 实体
@@ -64,22 +74,22 @@ public interface GenericDao {
      */
     void flush();
 
-//    /**
-//     * <contains>
-//     * <查找是否有该实例>
-//     *
-//     * @param t 实体
-//     * @return 是否包含
-//     */
-//    boolean contains(T t);
-//
-//    /**
-//     * <delete>
-//     * <删除表中的t数据>
-//     *
-//     * @param t 实体
-//     */
-//    void delete(T t);
+    /**
+     * <contains>
+     * <查找是否有该实例>
+     *
+     * @param t 实体
+     * @return 是否包含
+     */
+    boolean contains(BaseEntity t);
+
+    /**
+     * <delete>
+     * <删除表中的t数据>
+     *
+     * @param t 实体
+     */
+    void delete(BaseEntity t);
 //
 //    /**
 //     * <根据ID删除数据>

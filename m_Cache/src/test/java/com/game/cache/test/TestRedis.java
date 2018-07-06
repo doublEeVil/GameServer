@@ -1,40 +1,36 @@
-package com.game.test;
+package com.game.cache.test;
 
 import com.game.cache.redis.IRedisService;
-import com.game.world.game.service.ServiceManager;
-import com.game.world.servlet.TestServlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-/**
- * 测试功能模块是否正常
- */
 
 @SuppressWarnings("unused")
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:spring.xml"})
-public class ServerModuleTest {
-    private static Logger log = LogManager.getLogger(TestServlet.class);
+@TestPropertySource(locations = {"classpath:redis.properties"})
+@ContextConfiguration(locations = {"classpath:redis-config.xml"})
+public class TestRedis {
+    private static Logger log = LogManager.getLogger(TestRedis.class);
 
     @Autowired()
     @Qualifier("com.game.cache.redis.impl.SingleNodeRedisService")
     IRedisService redisService;
 
-    /**
-     * 测试redis
-     */
     @Test
     public void testRedis() {
-        // redis
-        IRedisService redisService = ServiceManager.getInstance().getRedisService();
+        System.out.println("---test redis---");
         String server_name = redisService.getValue("server_name");
         log.info("---server name is " + server_name);
         log.info("---redis正常");
+        Assert.assertTrue(server_name == null);
+        Assert.assertFalse(server_name != null);
+        System.out.println("---test redis pass---");
     }
 }

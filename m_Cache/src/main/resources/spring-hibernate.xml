@@ -1,0 +1,134 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+		 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <context:component-scan base-package="com.game.cache.mysql"/>
+
+    <!-- 配置数据源 c3p0 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close">
+        <property name="driverClass" value="${jdbc.driver}" />
+        <property name="jdbcUrl" value="${jdbc.url}" />
+        <property name="user" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+
+        <!-- 请求超时时间 -->
+        <property name="checkoutTimeout" value="30000" />
+        <!-- 每60秒检查所有连接池中的空闲连接。默认值: 0，不检查 -->
+        <property name="idleConnectionTestPeriod" value="30" />
+        <!-- 连接数据库连接池最大空闲时间 -->
+        <property name="maxIdleTime" value="30" />
+        <!-- 连接池初始化连接数 -->
+        <property name="initialPoolSize" value="5" />
+        <property name="minPoolSize" value="5" />
+        <property name="maxPoolSize" value="20" />
+        <!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。默认值: 3 -->
+        <property name="acquireIncrement" value="5" />
+
+
+    </bean>
+    <!-- 线程池配置 -->
+    <bean id="taskExecutor"
+          class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <!-- 核心线程数 -->
+        <property name="corePoolSize" value="${task.core_pool_size}" />
+        <!-- 最大线程数 -->
+        <property name="maxPoolSize" value="${task.max_pool_size}" />
+        <!-- 队列最大长度 -->
+        <property name="queueCapacity" value="${task.queue_capacity}" />
+        <!-- 线程池维护线程所允许的空闲时间，默认为60s -->
+        <property name="keepAliveSeconds" value="${task.keep_alive_seconds}" />
+        <!-- 线程池对拒绝任务（无线程可用）的处理策略，目前只支持AbortPolicy、CallerRunsPolicy；默认为后者 -->
+
+        <property name="rejectedExecutionHandler">
+            <!-- AbortPolicy:直接抛出java.util.concurrent.RejectedExecutionException异常 -->
+            <!-- CallerRunsPolicy:主线程直接执行该任务，执行完之后尝试添加下一个任务到线程池中，可以有效降低向线程池内添加任务的速度 -->
+            <!-- DiscardOldestPolicy:抛弃旧的任务、暂不支持；会导致被丢弃的任务无法再次被执行 -->
+            <!-- DiscardPolicy:抛弃当前任务、暂不支持；会导致被丢弃的任务无法再次被执行 -->
+            <bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy" />
+        </property>
+    </bean>
+
+    <!-- 配置hibernate的SessionFactory -->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <!-- 注入数据源 相关信息看源码 -->
+        <property name="dataSource" ref="dataSource" />
+        <!-- hibernate配置信息 -->
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+
+                <!-- 开启二级缓存 ehcache -->
+                <!--<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>-->
+                <!--<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>-->
+                <!--<prop key="hibernate.cache.region.factory_class">${hibernate.cache.region.factory_class}</prop>-->
+                <!--<prop key="hibernate.cache.provider_configuration_file_resource_path">${hibernate.cache.provider_configuration_file_resource_path}-->
+                <!--</prop>-->
+            </props>
+        </property>
+        <!-- 扫描hibernate注解配置的entity -->
+        <property name="packagesToScan" value="com.game" />
+    </bean>
+
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+        <property name="globalRollbackOnParticipationFailure" value="false" />
+    </bean>
+
+    <!-- 不添加这句基本一直报错，只要使用了transactional注解 -->
+    <aop:aspectj-autoproxy  proxy-target-class="true"/>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- 配置事务增强处理Bean，指定事务管理器 -->
+    <!--<tx:advice id="transactionAdvice" transaction-manager="transactionManager">-->
+        <!--&lt;!&ndash; 配置详细事务处理语义 &ndash;&gt;-->
+        <!--<tx:attributes>-->
+            <!--<tx:method name="save*" propagation="REQUIRED" />-->
+            <!--<tx:method name="add*" propagation="REQUIRED" />-->
+            <!--<tx:method name="create*" propagation="REQUIRED" />-->
+            <!--<tx:method name="insert*" propagation="REQUIRED" />-->
+            <!--<tx:method name="update*" propagation="REQUIRED" />-->
+            <!--<tx:method name="merge*" propagation="REQUIRED" />-->
+            <!--<tx:method name="del*" propagation="REQUIRED" />-->
+            <!--<tx:method name="remove*" propagation="REQUIRED" />-->
+            <!--<tx:method name="put*" propagation="REQUIRED" />-->
+            <!--<tx:method name="use*" propagation="REQUIRED"/>-->
+            <!--&lt;!&ndash;hibernate4必须配置为开启事务 否则 getCurrentSession()获取不到&ndash;&gt;-->
+            <!--<tx:method name="get*" propagation="REQUIRED" read-only="true" />-->
+            <!--<tx:method name="select*" propagation="REQUIRED" read-only="true" />-->
+            <!--<tx:method name="find*" propagation="REQUIRED" read-only="true" />-->
+            <!--<tx:method name="load*" propagation="REQUIRED" read-only="true" />-->
+            <!--&lt;!&ndash; 其他采用默认事务方式 &ndash;&gt;-->
+            <!--<tx:method name="*" />-->
+
+        <!--</tx:attributes>-->
+    <!--</tx:advice>-->
+
+    <!-- Spring aop事务管理 -->
+    <!--<aop:config>-->
+        <!--&lt;!&ndash; 配置切入点 &ndash;&gt;-->
+        <!--<aop:pointcut id="transactionPointcut"-->
+                      <!--expression="execution(* com.game.cache.mysql.service.impl.*Service.*(..))-->
+			<!--" />-->
+        <!--&lt;!&ndash; 指定在txAdvice切入点应用txAdvice事务增强处理 &ndash;&gt;-->
+        <!--<aop:advisor pointcut-ref="transactionPointcut"-->
+                     <!--advice-ref="transactionAdvice" />-->
+    <!--</aop:config>-->
+
+</beans>

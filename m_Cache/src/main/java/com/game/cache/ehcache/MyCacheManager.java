@@ -1,7 +1,5 @@
 package com.game.cache.ehcache;
 
-import com.game.cache.ehcache.entity.ObjA;
-import com.game.cache.ehcache.entity.ObjB;
 import com.game.common.util.ClassUtils;
 import org.ehcache.Cache;
 import org.ehcache.CacheManager;
@@ -10,7 +8,6 @@ import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.expiry.ExpiryPolicy;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,56 +16,40 @@ public class MyCacheManager {
     private static Map<String, Cache<Long, ?>> DATA = new HashMap<>();
     private static CacheManager cacheManager = CacheManagerBuilder.newCacheManagerBuilder().build();
 
-    public static void initCache() {
+    public static void initCache(String basePackage) {
         cacheManager.init();
 
         // 开始构建
-        Map<String, Class<?>> classMap = ClassUtils.getClassMapByAnnounce("com.game.cache", CacheConfig.class);
+        Map<String, Class<?>> classMap = ClassUtils.getClassMapByAnnounce(basePackage, CacheConfig.class);
         for (Class<?> clazz : classMap.values()) {
             try {
-                CacheConfig cache = clazz.getAnnotation(CacheConfig.class);
-                String cacheName = cache.name();
+                CacheConfig cacheConfig = clazz.getAnnotation(CacheConfig.class);
+                String cacheName = cacheConfig.name();
                 cacheName = cacheName.equals("") ? clazz.getName() : cacheName;
-                int heapNum = cache.heapNum();
-                int offHeapSize = cache.offHeapSize();
-                int expire = cache.expire();
+                int heapNum = cacheConfig.heapNum();
+                int offHeapSize = cacheConfig.offHeapSize();
+                // int expire = cacheConfig.expire();
 
-                //
-                Cache<Long, ?>  rcache = cacheManager.createCache(cacheName,
+                Cache<Long, ?>  cache = cacheManager.createCache(cacheName,
                         CacheConfigurationBuilder.newCacheConfigurationBuilder(
                                 Long.class, clazz, ResourcePoolsBuilder
                                         .heap(heapNum)
                                         .offheap(offHeapSize, MemoryUnit.MB)
 
                         ).withExpiry(ExpiryPolicy.NO_EXPIRY));
-                DATA.put(clazz.getName(), rcache);
+                DATA.put(clazz.getName(), cache);
             } catch (Exception e) {
                 e.printStackTrace();
-                System.err.println("发生异常：" + e.getMessage());
+                System.err.println("初始化 cache 发生异常：" + e.getMessage());
             }
         }
+    }
 
-        // 测试
-        for (Cache cache : DATA.values()) {
-            System.out.println("----" + cache);
-        }
+    public static <T> Cache<Long, T> getCache(Class<T> clazz) {
+        return (Cache<Long, T>) DATA.get(clazz.getName());
+    }
 
-        Cache cache1 = DATA.get(ObjA.class.getName());
-        Cache cache2 = DATA.get(ObjB.class.getName());
-        for (int i = 0; i <= 300000; i++) {
-            ObjA a = new ObjA();
-            a.setId(i);
-            a.setParam("" + i+"浔阳江头夜送客，枫叶荻花秋瑟瑟，主人在马克在床");
-            ObjB b = new ObjB();
-            b.setId(i * 1000);
-            b.setParam("++");
-            cache1.put(a.getId(), a);
-            cache2.put(b.getId(), b);
-        }
-        //
-
-        System.out.println(cache1.get((long)1));
-        System.out.println(cache2.get((long)2));
-
+    public static <T> T getCacheEntity(Class<T> clazz, long id) {
+        return getCache(clazz).get(id);
     }
 }

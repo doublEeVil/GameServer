@@ -20,42 +20,17 @@ public class PrintUtils {
             for (Field field : fieldArr) {
                 field.setAccessible(true);
                 System.out.print("-----");
-                if (field.getType().getSimpleName().equals("int")) {
-                    System.out.println(field.getName() + " int :" + field.getInt(obj));
-                } else if (field.getType().getSimpleName().equals("String")) {
-                    System.out.println(field.getName() + " String :" + field.get(obj));
-                } else if (field.getType().getSimpleName().equals("byte")) {
-                    System.out.println(field.getName() + " byte :" + field.getByte(obj));
-                } else if (field.getType().getSimpleName().equals("boolean")) {
-                    System.out.println(field.getName() + " boolean :" + field.getBoolean(obj));
-                } else if (field.getType().getSimpleName().equals("int[]")) {
-                    System.out.print(field.getName() + " int[] :");
-                    int[] arr = (int[]) field.get(obj);
-                    for (int v : arr) {
-                        System.out.print(" " + v);
+                if (field.getType().getSimpleName().endsWith("[]")) {
+                    // 数组类型
+                    Object[] subobjs = (Object[]) field.get(obj);
+                    System.out.print(field.getName() + " " + field.getType().getSimpleName());
+                    for (Object subobj : subobjs) {
+                        System.out.print(" " + subobj);
                     }
                     System.out.println();
-                } else if (field.getType().getSimpleName().equals("String[]")) {
-                    System.out.print(field.getName() + " String[] :");
-                    String[] arr = (String[]) field.get(obj);
-                    for (String v : arr) {
-                        System.out.print(" " + v);
-                    }
-                    System.out.println();
-                } else if (field.getType().getSimpleName().equals("byte[]")) {
-                    System.out.print(field.getName() + " byte[] :");
-                    byte[] arr = (byte[]) field.get(obj);
-                    for (byte v : arr) {
-                        System.out.print(" " + v);
-                    }
-                    System.out.println();
-                } else if (field.getType().getSimpleName().equals("boolean[]")) {
-                    System.out.print(field.getName() + " boolean[] :");
-                    boolean[] arr = (boolean[]) field.get(obj);
-                    for (boolean v : arr) {
-                        System.out.print(" " + v);
-                    }
-                    System.out.println();
+                } else {
+                    // 其他类型
+                    System.out.println(field.getName() + " " + field.getType().getSimpleName() + ":" + field.getDouble(obj));
                 }
             }
         } catch (Exception e) {

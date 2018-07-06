@@ -1,17 +1,13 @@
 package com.game.world;
 
 import com.game.cache.ehcache.MyCacheManager;
-import com.game.cache.redis.IRedisService;
-import com.game.http.controller.HandleHttp;
 import com.game.http.netty.MyHttpServer;
 import com.game.world.config.ServerConfig;
 import com.game.world.event.EventManager;
-import com.game.world.game.service.ServiceManager;
 import com.game.world.net.IDataHandler;
 import com.game.world.net.IHandler;
 import com.game.world.net.ServerInitializer;
 import com.game.world.procol.ProtocolFactory;
-import com.game.world.servlet.TestServlet;
 import com.game.world.thread.ShutdownThread;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -19,10 +15,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.ServletHolder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import java.util.Map;
@@ -62,7 +54,7 @@ public class WorldServer {
 
     private void onStart() throws Exception{
         initConfig();
-        initServlet();
+        initHttp();
         initProtocol();
         initEvent();
         initNetwork();
@@ -83,18 +75,8 @@ public class WorldServer {
     /**
      * 开启一个http 服务器
      */
-    private void initServlet() throws Exception{
-        // 下面两个服务器选一个即可
-        // 一个使用jetty的http服务器
-        Server server = new Server();
-        SelectChannelConnector connector = new SelectChannelConnector();
-        connector.setPort(serverConfig.getHttpPort());
-        server.addConnector(connector);
-        Context root = new Context(server, "/", 1);
-        root.addServlet(new ServletHolder(new TestServlet()), "/test");
-        server.start();
+    private void initHttp() throws Exception{
         // 一个自定义的http服务器
-        //启动两个http 服务
         new Thread(()->{
             try {
                 new MyHttpServer(9000).launch(SERVER_CTX);
@@ -155,8 +137,6 @@ public class WorldServer {
     }
 
     private void initService() {
-        // cache
-        MyCacheManager.initCache();
     }
 
 }

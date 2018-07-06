@@ -1,21 +1,10 @@
-package com.game.world.game.service.base;
+package com.game.world.test.event_spring;
 
-import com.game.world.event.Event;
-import com.game.world.event.EventId;
-import com.game.world.event.springevent.MyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-@Service("abcService")
-public class AbcService {
-    public void say() {
-        System.out.println("...");
-    }
-
-    @Event(eventId = EventId.TEST1)
-    public void testEvent1(String s1, String s2) {
-        System.out.println("监听事件===" + s1 + " " + s2);
-    }
+@Service("testEventSpringService")
+public class TestEventService {
 
     @EventListener
     public void testEvent2(MyEvent myEvent) {
