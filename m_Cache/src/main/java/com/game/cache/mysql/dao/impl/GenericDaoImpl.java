@@ -8,11 +8,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 /**
@@ -103,6 +100,17 @@ public class GenericDaoImpl implements GenericDao {
         //session.createSQLQuery("SET NAMES utf8mb4").executeUpdate();
         T load = session.get(clazz, id);
         return load;
+    }
+
+    @Override
+    public <T> T getByHql(String hql, Object... params) {
+        Query query = this.getSession().createQuery(hql);
+        if (params != null) {
+            for (int i = 0; i < params.length; i++) {
+                query.setParameter(i, params[i]);
+            }
+        }
+        return (T) query.uniqueResult();
     }
 
     /**

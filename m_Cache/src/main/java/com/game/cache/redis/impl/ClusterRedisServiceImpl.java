@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import com.game.cache.redis.IRedisService;
+import com.game.cache.redis.RedisService;
 import com.game.cache.redis.JCacheBase;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Tuple;
@@ -14,7 +14,7 @@ import redis.clients.jedis.Tuple;
  */
 @Component("com.game.cache.redis.impl.ClusterRedisService")
 @SuppressWarnings("rawtypes")
-public class ClusterRedisService extends JCacheBase implements IRedisService {
+public class ClusterRedisServiceImpl extends JCacheBase implements RedisService {
     public int getTableID(Class c) {
         long id = this.incr(c.getName());
         if (id > 1990000000) { // 提前警告

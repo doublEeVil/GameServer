@@ -20,4 +20,20 @@ public class ServerConfig {
     public String getServerName() {
         return config.getString("server_name");
     }
+
+    public int getServerId() {
+        return config.getInt("server_id");
+    }
+
+    public String getOpenAddr() {
+        return config.getString("server_open_addr");
+    }
+
+    public String getZookeeperAddr() {
+        return config.getString("zookeeper_addr");
+    }
+
+    public String getZkpRootPath() {
+        return config.getString("zkp_root_path");
+    }
 }

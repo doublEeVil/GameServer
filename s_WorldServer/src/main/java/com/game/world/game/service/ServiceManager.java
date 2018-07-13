@@ -1,7 +1,7 @@
 package com.game.world.game.service;
 
-import com.game.cache.redis.IRedisService;
-import com.game.cache.redis.impl.SingleNodeRedisService;
+import com.game.cache.redis.RedisService;
+import com.game.cache.redis.impl.SingleNodeRedisServiceImpl;
 import com.game.world.WorldServer;
 
 public class ServiceManager {
@@ -11,8 +11,8 @@ public class ServiceManager {
         return instance;
     }
 
-    public IRedisService getRedisService() {
-        return WorldServer.getContext().getBean(SingleNodeRedisService.class);
+    public RedisService getRedisService() {
+        return WorldServer.getContext().getBean(SingleNodeRedisServiceImpl.class);
     }
 
 }

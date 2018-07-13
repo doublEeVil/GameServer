@@ -6,23 +6,25 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import java.io.Serializable;
 
-
+/**
+ * 需要更新的表数据
+ */
 @MappedSuperclass
 public class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-    private long id;
-    private long createDate;
-    private long updateDate;
+    protected int id;
+    protected long createDate;
+    protected long updateDate;
     @Transient
     private int updateFlag; //记录更新次数
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -51,5 +53,10 @@ public class BaseEntity implements Serializable {
 
     public void setUpdateFlag(int updateFlag) {
         this.updateFlag = updateFlag;
+    }
+
+    @Transient
+    public void addUpdateFlag() {
+        this.updateFlag++;
     }
 }

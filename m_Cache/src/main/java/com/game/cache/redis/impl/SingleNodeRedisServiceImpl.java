@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.game.cache.redis.IRedisService;
+import com.game.cache.redis.RedisService;
 import com.game.cache.redis.JCacheBase;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Tuple;
@@ -15,7 +15,7 @@ import redis.clients.jedis.Tuple;
  */
 @Component("com.game.cache.redis.impl.SingleNodeRedisService")
 @SuppressWarnings("rawtypes")
-public class SingleNodeRedisService extends JCacheBase implements IRedisService {
+public class SingleNodeRedisServiceImpl extends JCacheBase implements RedisService {
     public int getTableID(Class c) {
         long id = this.incr(c.getName());
         if (id > 1990000000) { // 提前警告
@@ -211,4 +211,6 @@ public class SingleNodeRedisService extends JCacheBase implements IRedisService 
     public double incrby(String key, double score, String member) {
         return super.incrby(key, score, member);
     }
+
+
 }

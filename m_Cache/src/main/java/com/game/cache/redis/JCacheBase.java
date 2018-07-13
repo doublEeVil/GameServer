@@ -23,10 +23,10 @@ public abstract class JCacheBase {
      */
     public static Logger logger_failure = Logger.getLogger("logger_redis_failure");
     @Resource
-    protected JedisPool  jedisPool;
+    public JedisPool  jedisPool;
 
     @SuppressWarnings("deprecation")
-    protected Jedis getJedis() {
+    public Jedis getJedis() {
         Jedis jedis = null;
         try {
             jedis = jedisPool.getResource();
@@ -45,7 +45,7 @@ public abstract class JCacheBase {
      * 
      * @param jedis
      */
-    protected void release(Jedis jedis) {
+    public void release(Jedis jedis) {
         if (jedis != null) {
             jedis.close();
         }
@@ -81,7 +81,7 @@ public abstract class JCacheBase {
      * @return
      * @throws Exception
      */
-    protected long incr(String key) {
+    public long incr(String key) {
         Jedis jedis = null;
         try {
             jedis = this.getJedis();
@@ -104,7 +104,7 @@ public abstract class JCacheBase {
      * @param members
      * @return
      */
-    protected long sadd(String key, String... members) {
+    public long sadd(String key, String... members) {
         Jedis jedis = null;
         try {
             jedis = this.getJedis();
@@ -125,7 +125,7 @@ public abstract class JCacheBase {
      * @param member
      * @return
      */
-    protected boolean sismember(String key, String member) {
+    public boolean sismember(String key, String member) {
         Jedis jedis = null;
         try {
             jedis = this.getJedis();
@@ -146,7 +146,7 @@ public abstract class JCacheBase {
      * @param members
      * @return
      */
-    protected long srem(String key, String... members) {
+    public long srem(String key, String... members) {
         Jedis jedis = null;
         try {
             jedis = this.getJedis();
@@ -166,7 +166,7 @@ public abstract class JCacheBase {
      * @param key
      * @return
      */
-    protected Set<String> smembers(String key) {
+    public Set<String> smembers(String key) {
         Jedis jedis = null;
         try {
             jedis = this.getJedis();
@@ -208,7 +208,7 @@ public abstract class JCacheBase {
      * @param key
      * @return
      */
-    protected Set<Tuple> zrevrangeWithScores(String key, long start, long end) {
+    public Set<Tuple> zrevrangeWithScores(String key, long start, long end) {
         Jedis jedis = null;
         try {
             jedis = this.getJedis();
@@ -228,7 +228,7 @@ public abstract class JCacheBase {
      * @param key
      * @return -1 为没有排名
      */
-    protected int zrevrank(String key, String member) {
+    public int zrevrank(String key, String member) {
         Jedis jedis = null;
         try {
             jedis = this.getJedis();
@@ -249,7 +249,7 @@ public abstract class JCacheBase {
      * @param key
      * @return
      */
-    protected long zremrangebyrank(String key, long start, long end) {
+    public long zremrangebyrank(String key, long start, long end) {
         Jedis jedis = null;
         try {
             jedis = this.getJedis();
@@ -290,7 +290,7 @@ public abstract class JCacheBase {
      * @param key
      * @return
      */
-    protected long zcard(String key) {
+    public long zcard(String key) {
         Jedis jedis = null;
         try {
             jedis = this.getJedis();
@@ -319,7 +319,7 @@ public abstract class JCacheBase {
         }
     }
 
-    protected long delKey(String... key) {
+    public long delKey(String... key) {
         Jedis jedis = null;
         try {
             jedis = this.getJedis();
@@ -333,11 +333,11 @@ public abstract class JCacheBase {
         }
     }
 
-    protected int getDbIndex() {
+    public int getDbIndex() {
         return dbIndex;
     }
 
-    protected void setDbIndex(int dbIndex) {
+    public void setDbIndex(int dbIndex) {
         this.dbIndex = dbIndex;
     }
     //// *************************************************************

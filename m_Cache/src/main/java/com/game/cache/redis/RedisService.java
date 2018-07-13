@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * 集群
  */
-public interface IRedisService {
+public interface RedisService {
     /**
      * 表id,
      *
@@ -271,4 +271,6 @@ public interface IRedisService {
      * @return
      */
     public double incrby(String key, double score, String member);
+
+    Long expire(String s, int time);
 }

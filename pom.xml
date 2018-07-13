@@ -10,9 +10,11 @@
         <module>m_CommonUtil</module>
         <module>m_HttpServer</module>
         <module>m_Cache</module>
+        <module>m_RpcData</module>
+        <module>m_Zookeeper</module>
         <module>s_WorldServer</module>
         <module>s_GateServer</module>
-
+        <module>s_IpdServer</module>
     </modules>
     <properties>
         <!--指定Maven用什么编码来读取源码及文档 -->
@@ -299,6 +301,32 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- Protostuff -->
+        <dependency>
+            <groupId>com.dyuproject.protostuff</groupId>
+            <artifactId>protostuff-core</artifactId>
+            <version>1.0.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.dyuproject.protostuff</groupId>
+            <artifactId>protostuff-runtime</artifactId>
+            <version>1.0.8</version>
+        </dependency>
+
+        <!-- ZooKeeper -->
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>3.4.8</version>
+        </dependency>
+
+        <!-- CGLib -->
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.1</version>
         </dependency>
 
     </dependencies>

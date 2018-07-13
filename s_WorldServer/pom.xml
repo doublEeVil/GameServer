@@ -29,6 +29,12 @@
             <artifactId>m_Cache</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- zookeeper模块 -->
+        <dependency>
+            <groupId>com.game</groupId>
+            <artifactId>m_Zookeeper</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>WorldServer</finalName>

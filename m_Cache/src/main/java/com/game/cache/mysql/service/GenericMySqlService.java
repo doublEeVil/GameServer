@@ -4,7 +4,7 @@ import com.game.cache.mysql.BaseEntity;
 
 import java.util.List;
 
-public interface IGenericMySqlService {
+public interface GenericMySqlService {
     /**
      * 保存
      * @param t
@@ -18,7 +18,16 @@ public interface IGenericMySqlService {
      * @param <T>
      * @return
      */
-    <T> T get(Class<T> clazz, Long id);
+    <T> T get(Class<T> clazz, int id);
+
+    /**
+     * 特殊查询
+     * @param hql
+     * @param params
+     * @param <T>
+     * @return
+     */
+    <T> T getByHql(String hql, Object ... params);
 
     /**
      * 查找全部

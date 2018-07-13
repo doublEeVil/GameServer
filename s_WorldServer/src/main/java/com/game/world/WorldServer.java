@@ -9,6 +9,7 @@ import com.game.world.net.IHandler;
 import com.game.world.net.ServerInitializer;
 import com.game.world.procol.ProtocolFactory;
 import com.game.world.thread.ShutdownThread;
+import com.game.zookeeper.ZkpRegistry;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
@@ -59,6 +60,7 @@ public class WorldServer {
         initEvent();
         initNetwork();
         initService();
+        registerToZookeeper();
     }
 
     /**
@@ -137,6 +139,17 @@ public class WorldServer {
     }
 
     private void initService() {
+    }
+
+    private void registerToZookeeper(){
+        String zkpAddr = serverConfig.getZookeeperAddr();
+        String zkpRootPath = serverConfig.getZkpRootPath();
+        String zkpDataPath = serverConfig.getServerId() + "_m";
+        ZkpRegistry registry = new ZkpRegistry(zkpAddr, zkpRootPath, zkpDataPath);
+
+        // 发送数据格式 192.168.0.192:8001
+        String data = serverConfig.getOpenAddr();
+        registry.register(data);
     }
 
 }

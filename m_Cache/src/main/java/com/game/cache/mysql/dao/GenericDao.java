@@ -61,6 +61,15 @@ public interface GenericDao {
      */
      <T> List<T> getAll(Class<T> clazz);
 
+    /**
+     * 根据hql查找唯一
+     * @param hql
+     * @param params
+     * @param <T>
+     * @return
+     */
+     <T> T getByHql(String hql, Object ... params);
+
 
     /**
      * <update>

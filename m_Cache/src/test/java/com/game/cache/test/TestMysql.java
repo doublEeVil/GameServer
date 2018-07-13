@@ -1,7 +1,7 @@
 package com.game.cache.test;
 
+import com.game.cache.mysql.service.GenericMySqlService;
 import com.game.cache.test.entity.TestEntityA;
-import com.game.cache.mysql.service.impl.GenericMysqlService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +18,7 @@ import java.util.List;
 public class TestMysql {
 
     @Autowired
-    private GenericMysqlService genericMysqlService;
+    private GenericMySqlService genericMysqlService;
 
     @Test
     public void testInsert() {
@@ -33,8 +33,8 @@ public class TestMysql {
 
     @Test
     public void testFind() {
-        TestEntityA a = genericMysqlService.get(TestEntityA.class, 10001L);
-        Assert.assertEquals(a.getAge(), 25);
+        TestEntityA a = genericMysqlService.get(TestEntityA.class, 10001);
+        Assert.assertEquals(a.getAge(), 12);
         List<TestEntityA> list = genericMysqlService.getAll(TestEntityA.class);
         Assert.assertNotNull(list);
         System.out.println("==== test find pass ===");
@@ -42,18 +42,24 @@ public class TestMysql {
 
     @Test
     public void testUpdate() {
-        TestEntityA a = genericMysqlService.get(TestEntityA.class, 10001L);
+        TestEntityA a = genericMysqlService.get(TestEntityA.class, 10001);
         a.setAge(28);
         genericMysqlService.update(a);
-        a = genericMysqlService.get(TestEntityA.class, 10001L);
+        a = genericMysqlService.get(TestEntityA.class, 10001);
         Assert.assertEquals(a.getAge(), 28);
         System.out.println("==== test update pass ===");
     }
 
     @Test
     public void testDelete() {
-        TestEntityA a = genericMysqlService.get(TestEntityA.class, 10001L);
+        TestEntityA a = genericMysqlService.get(TestEntityA.class, 10001);
         genericMysqlService.delete(a);
         System.out.println("==== test delete pass ===");
+    }
+
+    @Test
+    public void testByHql() {
+        TestEntityA a = genericMysqlService.getByHql(" from TestEntityA a where a.age = ?", 23);
+        System.out.println(a.getId());
     }
 }

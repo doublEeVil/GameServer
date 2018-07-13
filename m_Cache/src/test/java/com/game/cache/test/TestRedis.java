@@ -1,6 +1,6 @@
 package com.game.cache.test;
 
-import com.game.cache.redis.IRedisService;
+import com.game.cache.redis.RedisService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
@@ -21,7 +21,7 @@ public class TestRedis {
 
     @Autowired()
     @Qualifier("com.game.cache.redis.impl.SingleNodeRedisService")
-    IRedisService redisService;
+    RedisService redisService;
 
     @Test
     public void testRedis() {
