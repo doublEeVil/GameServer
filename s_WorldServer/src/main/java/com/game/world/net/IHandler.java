@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface IHandler {
-    Class<? extends MessageLite> handData();
+    Class<? extends IData> handData();
 }

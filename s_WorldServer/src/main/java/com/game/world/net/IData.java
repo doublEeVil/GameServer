@@ -1,21 +1,22 @@
 package com.game.world.net;
 
-import com.google.protobuf.MessageLite;
+import io.netty.channel.Channel;
 
-public class IData {
-    private MessageLite msg;
+public abstract class IData implements Cloneable{
+    private short protocolId;           //协议号
+    private Channel channel = null;
     private boolean handleOver = false;
 
-    public IData(MessageLite msg) {
-        this.msg = msg;
+    public IData(short protocolId) {
+        this.protocolId = protocolId;
     }
 
-    public MessageLite getMsg() {
-        return msg;
+    public short getProtocolId() {
+        return protocolId;
     }
 
-    public void setMsg(MessageLite msg) {
-        this.msg = msg;
+    public void setProtocolId(short protocolId) {
+        this.protocolId = protocolId;
     }
 
     public boolean isHandleOver() {
@@ -24,5 +25,18 @@ public class IData {
 
     public void setHandleOver(boolean handleOver) {
         this.handleOver = handleOver;
+    }
+
+    @Override
+    public IData clone() throws CloneNotSupportedException {
+        return (IData) super.clone();
+    }
+
+    public Channel getChannel() {
+        return channel;
+    }
+
+    public void setChannel(Channel channel) {
+        this.channel = channel;
     }
 }

@@ -30,7 +30,7 @@ public class PrintUtils {
                     System.out.println();
                 } else {
                     // 其他类型
-                    System.out.println(field.getName() + " " + field.getType().getSimpleName() + ":" + field.getDouble(obj));
+                    System.out.println(field.getName() + " " + field.getType().getSimpleName() + ":" + field.get(obj));
                 }
             }
         } catch (Exception e) {

@@ -1,12 +1,7 @@
 package com.game.world.net;
 
-import com.game.world.bean.WorldPlayer;
 import com.game.world.game.service.MessageService;
-import com.game.world.procol.ProtocolFactory;
-import com.game.world.procol.Req1Protos;
-import com.google.protobuf.MessageLite;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
 import org.apache.logging.log4j.LogManager;
@@ -15,12 +10,13 @@ import org.apache.logging.log4j.Logger;
 /**
  * 处理网络连接以及心跳检测
  */
-public class ServerHandler extends SimpleChannelInboundHandler<MessageLite> {
+public class ServerHandler extends SimpleChannelInboundHandler<IData> {
     private static Logger log = LogManager.getLogger(ServerHandler.class);
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, MessageLite msg) throws Exception {
-        MessageService.addMessage(new IData(msg));
+    protected void channelRead0(ChannelHandlerContext ctx, IData msg) throws Exception {
+        msg.setChannel(ctx.channel());
+        MessageService.addMessage(msg);
     }
 
     @Override
@@ -31,6 +27,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<MessageLite> {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         log.info(ctx.channel().remoteAddress() + "断开链接");
+        ConnectManager.getInstance().playerLogout(ctx.channel());
     }
 
     @Override

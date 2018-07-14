@@ -1,8 +1,5 @@
 package com.game.world.net.coder;
 
-import com.game.world.net.Packet;
-import com.google.protobuf.MessageLite;
-import com.google.protobuf.MessageOrBuilder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,16 +14,11 @@ import static io.netty.buffer.Unpooled.wrappedBuffer;
 /**
  * 自定义包 转 websocket
  */
-public class CustomToWebSocketEncoder extends MessageToMessageEncoder<Packet> {
+public class CustomToWebSocketEncoder extends MessageToMessageEncoder<ByteBuf> {
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, Packet msg, List<Object> out) throws Exception {
-        ByteBuf buf = Unpooled.buffer();
-        buf.writeInt(msg.getBodyMsg().toByteArray().length);
-        buf.writeByte(-88);
-        buf.writeShort(msg.getHeadId());
-        buf.writeBytes(msg.getBodyMsg().toByteArray());
-        WebSocketFrame frame = new BinaryWebSocketFrame(buf);
+    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+        WebSocketFrame frame = new BinaryWebSocketFrame(msg);
         out.add(frame);
     }
 }

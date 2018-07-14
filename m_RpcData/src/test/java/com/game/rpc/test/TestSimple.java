@@ -29,7 +29,7 @@ public class TestSimple {
 
         System.out.println("time: " + (t2 - t1));
         try {
-            Thread.sleep(123456);
+            Thread.sleep(1506);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

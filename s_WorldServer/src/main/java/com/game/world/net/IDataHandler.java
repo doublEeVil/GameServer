@@ -7,8 +7,5 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class IDataHandler {
-    public static Map<Integer, Channel> playerIdChannelMap = new ConcurrentHashMap<>();
-    public static Map<Channel, Integer> channelPlayerIdMap = new ConcurrentHashMap<>();
-
     public abstract void handle(WorldPlayer worldPlayer, IData data);
 }

@@ -2,7 +2,7 @@ syntax = "proto2";
 
 package procol;
 
-option java_package = "com.game.world.procol";
+option java_package = "com.game.world.protocol";
 option java_outer_classname = "Req1Protos";
 
 message Req1 {

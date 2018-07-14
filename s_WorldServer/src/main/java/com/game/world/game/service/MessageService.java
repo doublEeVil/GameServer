@@ -13,6 +13,9 @@ public class MessageService {
     private static ExecutorService workPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 15);
 
     public static void addMessage(IData data) {
+        if (null == data) {
+            return;
+        }
         workPool.execute(new MessageHandleThread(data));
     }
 
