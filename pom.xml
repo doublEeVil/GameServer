@@ -15,6 +15,8 @@
         <module>s_WorldServer</module>
         <module>s_GateServer</module>
         <module>s_IpdServer</module>
+        <module>s_OrderSerialServer</module>
+        <module>s_PayNotifyServer</module>
     </modules>
     <properties>
         <!--指定Maven用什么编码来读取源码及文档 -->
@@ -329,6 +331,17 @@
             <version>3.1</version>
         </dependency>
 
+        <!-- log4j mongodb -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-nosql</artifactId>
+            <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.2.2</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

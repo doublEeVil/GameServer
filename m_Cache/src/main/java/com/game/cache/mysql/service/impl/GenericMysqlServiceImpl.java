@@ -1,6 +1,7 @@
 package com.game.cache.mysql.service.impl;
 
 import com.game.cache.mysql.BaseEntity;
+import com.game.cache.mysql.BaseIdAutoIncEntity;
 import com.game.cache.mysql.dao.GenericDao;
 import com.game.cache.mysql.service.GenericMySqlService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,21 @@ public class GenericMysqlServiceImpl implements GenericMySqlService {
     @Autowired
     private GenericDao genericDao;
 
+    @Override
+    public void save(BaseIdAutoIncEntity t) {
+        genericDao.save(t);
+    }
+
+    @Override
+    public void update(BaseIdAutoIncEntity t) {
+        genericDao.update(t);
+    }
+
+    @Override
+    public void delete(BaseIdAutoIncEntity t) {
+        genericDao.delete(t);
+    }
+
     public void save(BaseEntity t) {
         genericDao.save(t);
         //GenericDao.flush();
@@ -29,6 +45,11 @@ public class GenericMysqlServiceImpl implements GenericMySqlService {
         return genericDao.getAll(clazz);
     }
 
+    @Override
+    public <T> List<T> getAllByHql(String hql, Object... params) {
+        return genericDao.getAllByHql(hql, params);
+    }
+
     public <T> T getByHql(String hql, Object ... params) {
         return genericDao.getByHql(hql, params);
     }
@@ -39,5 +60,10 @@ public class GenericMysqlServiceImpl implements GenericMySqlService {
 
     public void delete(BaseEntity t) {
         genericDao.delete(t);
+    }
+
+    @Override
+    public void flush() {
+        genericDao.flush();
     }
 }

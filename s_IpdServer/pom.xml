@@ -105,7 +105,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <outputDirectory>${project.build.directory}/../../_ServerDeploy/IpdServer</outputDirectory>
+                    <outputDirectory>${project.build.directory}/../../_ServerDeploy/ipdServer</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>

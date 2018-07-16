@@ -70,6 +70,14 @@ public interface GenericDao {
      */
      <T> T getByHql(String hql, Object ... params);
 
+    /**
+     *
+     * @param hql
+     * @param params
+     * @param <T>
+     * @return
+     */
+     <T> List<T> getAllByHql(String hql, Object ... params);
 
     /**
      * <update>
@@ -90,7 +98,7 @@ public interface GenericDao {
      * @param t 实体
      * @return 是否包含
      */
-    boolean contains(BaseEntity t);
+    boolean contains(Serializable t);
 
     /**
      * <delete>
@@ -98,7 +106,7 @@ public interface GenericDao {
      *
      * @param t 实体
      */
-    void delete(BaseEntity t);
+    void delete(Serializable t);
 //
 //    /**
 //     * <根据ID删除数据>

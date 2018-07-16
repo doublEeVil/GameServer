@@ -122,7 +122,7 @@
         <logger name="org.jboss.netty" level="warn" />
         <logger name="org.apache.http" level="warn" />
 
-        <Logger name="com.*.*" level="debug">
+        <Logger name="dbLog" level="debug">
             <appender-ref ref="databaseAppender"/>
         </Logger>
 
@@ -133,7 +133,6 @@
             <appender-ref ref="RollingFileWarn"/>
             <appender-ref ref="RollingFileError"/>
         </root>
-
 
 
     </Loggers>

@@ -8,7 +8,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -113,6 +112,17 @@ public class GenericDaoImpl implements GenericDao {
         return (T) query.uniqueResult();
     }
 
+    @Override
+    public <T> List<T> getAllByHql(String hql, Object... params) {
+        Query query = this.getSession().createQuery(hql);
+        if (params != null) {
+            for (int i = 0; i < params.length; i++) {
+                query.setParameter(i, params[i]);
+            }
+        }
+        return query.list();
+    }
+
     /**
      * <update>
      *
@@ -124,7 +134,9 @@ public class GenericDaoImpl implements GenericDao {
         Session session = this.getSession();
         // session.createSQLQuery("SET NAMES utf8mb4").executeUpdate();
         session.update(t);
-        ((BaseEntity)t).setUpdateFlag(0);
+        if (t instanceof BaseEntity) {
+            ((BaseEntity)t).setUpdateFlag(0);
+        }
         //LOGGER.debug(t.getClass().toString());
         //this.getSession().update(t);
     }
@@ -145,12 +157,12 @@ public class GenericDaoImpl implements GenericDao {
     }
 
     @Override
-    public boolean contains(BaseEntity t) {
+    public boolean contains(Serializable t) {
         return this.getSession().contains(t);
     }
 
     @Override
-    public void delete(BaseEntity t) {
+    public void delete(Serializable t) {
         this.getSession().delete(t);
     }
 
