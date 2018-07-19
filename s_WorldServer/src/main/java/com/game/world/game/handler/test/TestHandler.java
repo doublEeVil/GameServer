@@ -1,11 +1,11 @@
 package com.game.world.game.handler.test;
 
 import com.game.common.util.PrintUtils;
+import com.game.net.handler.IData;
+import com.game.net.handler.IDataHandler;
+import com.game.net.handler.IHandler;
+import com.game.protocol.data.test.Test;
 import com.game.world.bean.WorldPlayer;
-import com.game.world.net.IData;
-import com.game.world.net.IDataHandler;
-import com.game.world.net.IHandler;
-import com.game.world.protocol.test.Test;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,9 +15,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @IHandler(handData = Test.class)
-public class TestHandler extends IDataHandler{
+public class TestHandler extends IDataHandler {
 
-    public void handle(WorldPlayer worldPlayer, IData data) {
+    public void handle(IData data) {
         System.out.println("*****test");
         PrintUtils.printVar(data);
         long t1 = System.currentTimeMillis();

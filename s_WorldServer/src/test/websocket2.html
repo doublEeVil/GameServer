@@ -1,0 +1,117 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<script type="text/javascript">
+	var ws = new WebSocket("ws://10.16.28.172:8081/ws");
+	ws.onopen = function()
+	{
+	  console.log("open");
+	  ws.send("hello");
+	};
+	ws.onmessage = function(evt)
+	{
+	  console.log(evt.data)
+	};
+	ws.onclose = function(evt)
+	{
+	  console.log("WebSocketClosed!");
+	};
+	ws.onerror = function(evt)
+	{
+	  console.log("WebSocketError!");
+	};
+
+</script>
+
+</body>
+</html> -->
+
+<html>
+<head></head>
+<body>
+
+<!--<script src="./js/Long.min.js"></script>-->
+<!--<script src="./js/ByteBufferAB.min.js"></script>-->
+<!--<script src="./js/ProtoBuf.min.js"></script>-->
+<script src="./js/protobuf.js"></script>
+	<script type="text/javascript">
+		var sock = null;
+		var wsuri = "ws://127.0.0.1:8001/ws";
+
+        var WSMessage;
+        var wsmessage;
+        var buffer;
+
+		window.onload = function() {
+
+			console.log("onload");
+
+			sock = new WebSocket(wsuri);
+
+			sock.onopen = function() {
+				console.log("connected to " + wsuri);
+			};
+
+			sock.onclose = function(e) {
+				console.log("connection closed (" + e.code + ")");
+			};
+
+			sock.onmessage = function(evt) {
+				console.log("message received: " + evt.data);
+                var reader = new FileReader();
+                reader.readAsArrayBuffer(evt.data);
+                reader.onload = function (e) {
+                    var buf = new Uint8Array(reader.result);
+                    console.log(buf);
+                    var head = buf.subarray(0, 7);
+                    var body = buf.subarray(7, buf.length);
+                    console.log(head);
+                    console.log(body);
+                    console.log(WSMessage.decode(body));
+                }
+			}
+		};
+
+		function send() {
+			var msg = document.getElementById('message').value;
+			sock.send(msg);
+
+			sock.send(sendLogin(123457));
+		};
+
+		function sendLogin(playerId) {
+			// 101 -101 协议号 88 长度
+
+            var data = new Int8Array(11);
+            data[0] = 101;
+            data[1] = -102;
+
+            data[2] = 0xff & (101 >> 8);
+            data[3] = 0xff & (101);
+
+            data[4] = -88;
+
+            data[5] = 0xff & (4 >> 8);
+            data[6] = 0xff & (4);
+
+            data[7] = 0xff & (playerId >> 24);
+            data[8] = 0xff & (playerId >> 16);
+            data[9] = 0xff & (playerId >> 8);
+            data[10] = 0xff & (playerId);
+
+            return data;
+        };
+
+	</script>
+	<h1>WebSocket Echo Test</h1>
+	<form>
+		<p>
+			Message: <input id="message" type="text" value="Hello, world!">
+		</p>
+	</form>
+	<button onclick="send();">Send Message</button>
+</body>
+</html>

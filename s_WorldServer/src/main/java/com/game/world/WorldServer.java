@@ -1,29 +1,18 @@
 package com.game.world;
 
 import com.game.http.netty.MyHttpServer;
+import com.game.net.server.NetServer;
+import com.game.net.server.ServerType;
 import com.game.world.config.ServerConfig;
 import com.game.world.event.EventManager;
-import com.game.world.net.IDataHandler;
-import com.game.world.net.IHandler;
-import com.game.world.net.ServerInitializer;
-import com.game.world.protocol.ProtocolFactory;
 import com.game.world.thread.ShutdownThread;
 import com.game.zookeeper.ZkpRegistry;
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import java.util.Map;
 
 public class WorldServer {
     private ServerConfig serverConfig; // 服务器配置
-    private final EventLoopGroup boss = new NioEventLoopGroup(1);
-    private final EventLoopGroup worker = new NioEventLoopGroup();
-    private ChannelFuture channelFuture;
     private static ApplicationContext SERVER_CTX;
 
     public static void main(String[] args) throws Exception{
@@ -55,7 +44,6 @@ public class WorldServer {
     private void onStart() throws Exception{
         initConfig();
         initHttp();
-        initProtocol();
         initEvent();
         initNetwork();
         initService();
@@ -87,18 +75,6 @@ public class WorldServer {
         }).start();
     }
 
-    /**
-     * 处理协议与Handler的对应关系
-     */
-    private void initProtocol() {
-        ApplicationContext context = SERVER_CTX;
-        Map<String, Object> beansWithAnnotation = context.getBeansWithAnnotation(IHandler.class);
-        for (Object obj : beansWithAnnotation.values()) {
-            Class clazz = obj.getClass();
-            IHandler handler = (IHandler)clazz.getAnnotation(IHandler.class);
-            ProtocolFactory.register( handler.handData(), (IDataHandler) obj);
-        }
-    }
 
     /**
      * 处理事件
@@ -112,30 +88,10 @@ public class WorldServer {
      * @throws Exception
      */
     private void initNetwork() throws Exception{
-        try {
-            ServerBootstrap b = new ServerBootstrap();
-            b.group(boss, worker)
-             .childHandler(new ServerInitializer())
-             .channel(NioServerSocketChannel.class);
-            channelFuture = b.bind(serverConfig.getServerPort()).sync();
-        } finally {
-            Runtime.getRuntime().addShutdownHook(new Thread(()->{
-                shutdownNet();
-            }));
-        }
+        NetServer server = new NetServer(serverConfig.getServerPort(), ServerType.TP_WEBSOCKET, SERVER_CTX);
+        server.launch();
     }
 
-    private void shutdownNet(){
-        if (channelFuture != null) {
-            channelFuture.channel().close().syncUninterruptibly();
-        }
-        if (boss != null) {
-            boss.shutdownGracefully();
-        }
-        if (worker != null) {
-            worker.shutdownGracefully();
-        }
-    }
 
     private void initService() {
     }

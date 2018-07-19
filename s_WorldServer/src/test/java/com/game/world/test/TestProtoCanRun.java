@@ -1,7 +1,7 @@
 package com.game.world.test;
 
-import com.game.world.net.Msg2Msg;
-import com.game.world.protocol.account.Login;
+import com.game.net.handler.Msg2Msg;
+import com.game.protocol.data.account.Login;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -17,9 +17,6 @@ import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.CharsetUtil;
 import org.junit.Test;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
 
 public class TestProtoCanRun {
@@ -61,15 +58,30 @@ public class TestProtoCanRun {
             ch.writeAndFlush(frame);
 
             // 发送自定义协议2
-            com.game.world.protocol.test.Test test = new com.game.world.protocol.test.Test();
-            test.setName("zjs");
+            com.game.protocol.data.test.Test test = new com.game.protocol.data.test.Test();
+            test.setName("sdfasdfasfasdfasdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjhisdfassdfas" +
+                    "sdfasdfasfasdfasdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjhisdfassdfas" +
+                    "sdfasdfasfasdfasdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjhisdfassdfas" +
+                    "sdfasdfasfasdfasdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjhisdfassdfas" +
+                    "sdfasdfasfasdfasdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjhisdfassdfas" +
+                    "sdfasdfasfasdfasdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjhisdfassdfas" +
+                    "sdfasdfasfasdfasdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjhisdfassdfas" +
+                    "sdfasdfasfasdfasdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjhisdfassdfas" +
+                    "sdfasdfasfasdfasdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjhisdfassdfas" +
+                    "sdfasdfasfasdfasdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjhisdfassdfas" +
+                    "sdfasdfasfasdfasdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjhisdfassdfas" +
+                    "sdfasdfasfasdfasdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjhisdfassdfas");
             buf = Msg2Msg.encodeFromIData(test);
             frame = new BinaryWebSocketFrame(buf);
             ch.writeAndFlush(frame);
 
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
 
     }
 }
@@ -104,6 +116,7 @@ class TestHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
+        System.out.println("------");
         Channel ch = ctx.channel();
         if (!handshaker.isHandshakeComplete()) {
             handshaker.finishHandshake(ch, (FullHttpResponse) msg);
@@ -128,6 +141,8 @@ class TestHandler extends SimpleChannelInboundHandler<Object> {
         } else if (frame instanceof CloseWebSocketFrame) {
             System.out.println("WebSocket Client received closing");
             ch.close();
+        } else if (frame instanceof BinaryWebSocketFrame) {
+            System.out.println("====" + frame);
         }
     }
 

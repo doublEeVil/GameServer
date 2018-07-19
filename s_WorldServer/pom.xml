@@ -35,6 +35,18 @@
             <artifactId>m_Zookeeper</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- net模块 -->
+        <dependency>
+            <groupId>com.game</groupId>
+            <artifactId>m_Net</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- protocol模块 -->
+        <dependency>
+            <groupId>com.game</groupId>
+            <artifactId>m_Protocol</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>WorldServer</finalName>

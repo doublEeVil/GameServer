@@ -1,10 +1,7 @@
 package com.game.world.bean;
 
 import com.game.cache.mysql.BaseEntity;
-import com.game.world.net.ConnectManager;
-import com.game.world.net.IData;
-import com.game.world.net.IDataHandler;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import com.game.net.handler.IData;
 
 public class WorldPlayer extends BaseEntity {
     private int playerId;
@@ -18,6 +15,6 @@ public class WorldPlayer extends BaseEntity {
     }
 
     public void sendData(IData data) {
-        ConnectManager.getInstance().sendData(playerId, data);
+        //ConnectManager.getInstance().sendData(playerId, data);
     }
 }

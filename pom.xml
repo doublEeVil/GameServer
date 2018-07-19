@@ -12,6 +12,8 @@
         <module>m_Cache</module>
         <module>m_RpcData</module>
         <module>m_Zookeeper</module>
+        <module>m_Net</module>
+        <module>m_Protocol</module>
         <module>s_WorldServer</module>
         <module>s_GateServer</module>
         <module>s_IpdServer</module>

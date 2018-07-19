@@ -16,7 +16,7 @@
         <!--这个输出控制台的配置 -->
         <Console name="Console" target="SYSTEM_OUT">
             <!-- 控制台只输出level及以上级别的信息(onMatch),其他的直接拒绝(onMismatch) -->
-            <ThresholdFilter level="INFO" onMatch="ACCEPT"
+            <ThresholdFilter level="Trace" onMatch="ACCEPT"
                              onMismatch="DENY" />
             <!-- 输出日志的格式 -->
             <!--
@@ -85,14 +85,14 @@
         </RollingFile>
 
         <!-- 特殊log记录 -->
-        <NoSql name="databaseAppender">
-            <MongoDb databaseName="test"
-                     collectionName="logData"
-                     server="127.0.0.1"
-                     port="27017"
-                     userName="root"
-                     password="password"/>
-        </NoSql>
+        <!--<NoSql name="mongoAppender">-->
+            <!--<MongoDb databaseName="test"-->
+                     <!--collectionName="logData"-->
+                     <!--server="127.0.0.1"-->
+                     <!--port="27017"-->
+                     <!--userName=""-->
+                     <!--password=""/>-->
+        <!--</NoSql>-->
 
         <RollingFile name="GameData" fileName="${ERROR_LOG_FILE_NAME}/game_data.log"
                      filePattern="${ERROR_LOG_FILE_NAME}/$${date:yyyy-MM}/error-%d{yyyy-MM-dd-HH-mm}-%i.log">
@@ -122,9 +122,9 @@
         <logger name="org.jboss.netty" level="warn" />
         <logger name="org.apache.http" level="warn" />
 
-        <Logger name="dbLog" level="debug">
-            <appender-ref ref="databaseAppender"/>
-        </Logger>
+        <!--<Logger name="mongologger" level="info">-->
+            <!--<appender-ref ref="mongoAppender"/>-->
+        <!--</Logger>-->
 
         <!-- 配置日志的根节点 -->
         <root level="all">
@@ -132,6 +132,7 @@
             <appender-ref ref="RollingFileInfo"/>
             <appender-ref ref="RollingFileWarn"/>
             <appender-ref ref="RollingFileError"/>
+            <appender-ref ref="databaseAppender"/>
         </root>
 
 

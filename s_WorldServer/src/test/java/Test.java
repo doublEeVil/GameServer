@@ -1,3 +1,6 @@
+import com.game.net.handler.Msg2Msg;
+import com.game.protocol.data.account.Login;
+import io.netty.buffer.ByteBuf;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -19,5 +22,15 @@ public class Test {
         JSONObject json = JSONObject.fromObject(s);
         JSONArray array = json.getJSONArray("data");
         System.out.println(array.getJSONObject(0).getString("score"));
+    }
+
+
+    @org.junit.Test
+    public void test1() {
+        Login login = new Login();
+        login.setPlayerId(123);
+        ByteBuf buf = Msg2Msg.encodeFromIData(login);
+        System.out.println(buf.readByte());
+        System.out.println("====");
     }
 }
