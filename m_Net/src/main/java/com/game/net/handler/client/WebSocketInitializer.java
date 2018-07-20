@@ -19,7 +19,6 @@ import io.netty.handler.timeout.IdleStateHandler;
 import java.util.concurrent.TimeUnit;
 
 public class WebSocketInitializer extends ChannelInitializer<Channel> {
-    private static String WEBSOCKET_PATH = "/ws";
     private ServerEventListener listener;
 
     public WebSocketInitializer(ServerEventListener listener) {
@@ -30,7 +29,6 @@ public class WebSocketInitializer extends ChannelInitializer<Channel> {
     protected void initChannel(Channel ch) throws Exception {
         ChannelPipeline pip = ch.pipeline();
         pip.addLast(new IdleStateHandler(0, 0 , 5, TimeUnit.SECONDS));
-        //pip.addLast(new HttpResponseDecoder());
         pip.addLast(new HttpClientCodec());
         pip.addLast(new HttpObjectAggregator(65535));
         pip.addLast(new WebSocketToCustomDecoder()); // 收到消息时，先将websocket解码成自定义包

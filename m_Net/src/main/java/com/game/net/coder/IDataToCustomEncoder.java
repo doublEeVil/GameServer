@@ -14,7 +14,6 @@ public class IDataToCustomEncoder extends MessageToMessageEncoder<IData> {
     @Override
     protected void encode(ChannelHandlerContext ctx, IData msg, List<Object> out) throws Exception {
         out.add(getMsg(msg));
-        System.out.println(" IDATA -> CUSTOM");
     }
 
     private ByteBuf getMsg(IData msg) {

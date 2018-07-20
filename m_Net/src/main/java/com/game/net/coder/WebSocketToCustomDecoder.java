@@ -23,8 +23,6 @@ public class WebSocketToCustomDecoder extends MessageToMessageDecoder<WebSocketF
         } else if (msg instanceof TextWebSocketFrame) {
             TextWebSocketFrame tf = (TextWebSocketFrame) msg;
             System.out.println("rcv text: " + tf.text());
-            ctx.channel().writeAndFlush(" _ " + msg);
-            ctx.channel().flush();
         }
     }
 

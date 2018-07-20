@@ -5,7 +5,6 @@ import com.game.net.handler.IData;
 import com.game.net.handler.IDataHandler;
 import com.game.net.handler.IHandler;
 import com.game.protocol.data.account.Login;
-import com.game.world.WorldServer;
 import com.game.world.bean.WorldPlayer;
 import org.springframework.stereotype.Component;
 

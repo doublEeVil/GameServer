@@ -61,6 +61,9 @@
 
 			sock.onmessage = function(evt) {
 				console.log("message received: " + evt.data);
+				if (typeof evt.data == 'string') {
+				    return;
+				}
                 var reader = new FileReader();
                 reader.readAsArrayBuffer(evt.data);
                 reader.onload = function (e) {
@@ -70,7 +73,7 @@
                     var body = buf.subarray(7, buf.length);
                     console.log(head);
                     console.log(body);
-                    console.log(WSMessage.decode(body));
+                    console.log("playerid: " + rcvLogin(body));
                 }
 			}
 		};
@@ -81,6 +84,15 @@
 
 			sock.send(sendLogin(123457));
 		};
+
+		function rcvLogin(body) {
+		    var val = 0;
+			val |= 0xff | body[0] << 24;
+            val |= 0xff | body[1] << 16;
+            val |= 0xff | body[2] << 8;
+            val |= 0xff | body[3];
+			return val;
+        }
 
 		function sendLogin(playerId) {
 			// 101 -101 协议号 88 长度

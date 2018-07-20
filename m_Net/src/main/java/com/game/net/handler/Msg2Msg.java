@@ -2,6 +2,7 @@ package com.game.net.handler;
 
 import com.game.net.ProtocolFactory;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.logging.log4j.LogManager;
@@ -52,13 +53,13 @@ public final class Msg2Msg {
      */
     public static ByteBuf encodeFromIData(IData data) {
 
-        ByteBuf buf = Unpooled.buffer();
+        ByteBuf bodyBuf = Unpooled.directBuffer();
         Field[] fs = data.getClass().getDeclaredFields();
 
         for (Field f : fs) {
             try {
                 Object val = PropertyUtils.getProperty(data, f.getName());
-                setValue(f, val, buf);
+                setValue(f, val, bodyBuf);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
@@ -69,13 +70,16 @@ public final class Msg2Msg {
                 e.printStackTrace();
             }
         }
-        ByteBuf bufHead = Unpooled.buffer();
-        bufHead.writeByte(101);                   //头两位
-        bufHead.writeByte(-102);
-        bufHead.writeShort(data.getProtocolId()); // 协议号
-        bufHead.writeByte(-88);                   // 保留位
-        bufHead.writeShort(buf.readableBytes());  // 长度
-        bufHead.writeBytes(buf);                  // 包体
-        return bufHead;
+
+        ByteBuf headBuf = Unpooled.directBuffer();
+        headBuf.writeByte(101);                   //头两位
+        headBuf.writeByte(-102);
+        headBuf.writeShort(data.getProtocolId()); // 协议号
+        headBuf.writeByte(-88);                   // 保留位
+        headBuf.writeShort(bodyBuf.readableBytes());  // 长度
+
+        ByteBuf all = Unpooled.wrappedBuffer(headBuf, bodyBuf);
+        all.retain();
+        return all;
     }
 }
