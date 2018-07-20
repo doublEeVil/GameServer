@@ -1,13 +1,15 @@
-package com.game.net.handler.server;
+package com.game.net.client;
 
-import com.game.net.handler.ServerHandler;
-import com.game.net.server.ServerEventListener;
 import com.game.net.coder.CustomToIDataDecoder;
 import com.game.net.coder.IDataToCustomEncoder;
+import com.game.net.coder.IDataToNetMsgEncoder;
+import com.game.net.handler.ServerHandler;
+import com.game.net.server.ServerEventListener;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.timeout.IdleStateHandler;
+
 import java.util.concurrent.TimeUnit;
 
 public class CommonSocketInitializer extends ChannelInitializer<Channel> {
@@ -21,7 +23,7 @@ public class CommonSocketInitializer extends ChannelInitializer<Channel> {
     @Override
     protected void initChannel(Channel ch) throws Exception {
         ChannelPipeline pip = ch.pipeline();
-        pip.addLast(new IdleStateHandler(0, 0 , 5, TimeUnit.SECONDS));
+        pip.addLast(new IdleStateHandler(0, 0 , 10, TimeUnit.SECONDS));
         pip.addLast(new CustomToIDataDecoder());
         pip.addLast(new IDataToCustomEncoder());
         pip.addLast(new ServerHandler(listener));

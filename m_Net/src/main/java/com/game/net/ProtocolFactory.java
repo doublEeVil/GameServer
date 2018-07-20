@@ -3,6 +3,8 @@ package com.game.net;
 
 import com.game.net.handler.IData;
 import com.game.net.handler.IDataHandler;
+import com.game.net.handler.IHandler;
+import org.springframework.context.ApplicationContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +14,7 @@ public class ProtocolFactory {
     private static Map<Short, IData> DataId_Data_Map = new HashMap<>();
 
     public static void register(Class<? extends IData> msg, IDataHandler handler) {
-        if (DataClass_Handler_Map.containsKey(msg)) {
+        if (DataClass_Handler_Map.containsKey(msg) && DataClass_Handler_Map.get(msg) != handler) {
             throw new RuntimeException("多个handler处理同一个消息 dataType:" + msg.getName()
                     + " handler1:" + handler.getClass().getName()
                     + " handler2:" + DataClass_Handler_Map.get(msg).getClass().getName());
@@ -50,5 +52,18 @@ public class ProtocolFactory {
             }
         }
         return null;
+    }
+
+    /**
+     * 注册全部协议
+     * @param context
+     */
+    public  static void registerAll(ApplicationContext context) {
+        Map<String, Object> beansWithAnnotation = context.getBeansWithAnnotation(IHandler.class);
+        for (Object obj : beansWithAnnotation.values()) {
+            Class clazz = obj.getClass();
+            IHandler handler = (IHandler)clazz.getAnnotation(IHandler.class);
+            register( handler.handData(), (IDataHandler) obj);
+        }
     }
 }

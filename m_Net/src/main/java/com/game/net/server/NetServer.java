@@ -1,10 +1,8 @@
 package com.game.net.server;
 
 import com.game.net.ProtocolFactory;
-import com.game.net.handler.server.CommonSocketInitializer;
 import com.game.net.handler.IDataHandler;
 import com.game.net.handler.IHandler;
-import com.game.net.handler.server.WebSocketInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -77,12 +75,7 @@ public class NetServer {
      * 处理协议与Handler的对应关系
      */
     private void initProtocol() {
-        Map<String, Object> beansWithAnnotation = serverCtx.getBeansWithAnnotation(IHandler.class);
-        for (Object obj : beansWithAnnotation.values()) {
-            Class clazz = obj.getClass();
-            IHandler handler = (IHandler)clazz.getAnnotation(IHandler.class);
-            ProtocolFactory.register( handler.handData(), (IDataHandler) obj);
-        }
+        ProtocolFactory.registerAll(serverCtx);
     }
 
     private void shutdownNet(){

@@ -38,14 +38,17 @@ public class TestProtoCanRun {
                         ChannelPipeline p = ch.pipeline();
                         p.addLast(new HttpClientCodec());
                         p.addLast(new HttpObjectAggregator(8192));
+                        p.addLast(new WebSocketClientProtocolHandler(new URI("ws://192.168.0.192/ws"), WebSocketVersion.V13, null,
+                        false, new DefaultHttpHeaders(),
+                        8192));
                         p.addLast(handler);
                     }
                 });
 
         try {
-            Channel ch = b.connect("192.168.0.192", 8001).sync().channel();
-            handler.handshakeFuture().sync();
-
+            Channel ch = b.connect("192.168.0.192", 9200).sync().channel();
+            //handler.handshakeFuture().sync();
+            System.out.println("===");
             // 发送文本
             WebSocketFrame text = new TextWebSocketFrame("this si");
             ch.writeAndFlush(text);
