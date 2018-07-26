@@ -1,6 +1,7 @@
 package com.game.net.coder;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
@@ -15,10 +16,15 @@ import java.util.List;
 public class WebSocketToCustomDecoder extends MessageToMessageDecoder<WebSocketFrame> {
     @Override
     protected void decode(ChannelHandlerContext ctx, WebSocketFrame msg, List out) throws Exception {
-        System.out.println("==== rcv msg");
+        //System.out.println("==== rcv msg");
         if (msg instanceof BinaryWebSocketFrame) {
             ByteBuf buf = msg.content();
             out.add(buf);
+
+            //
+            //String rcv = ByteBufUtil.hexDump(buf);
+            //System.out.println("===" + rcv);
+
             buf.retain();
         } else if (msg instanceof TextWebSocketFrame) {
             TextWebSocketFrame tf = (TextWebSocketFrame) msg;
@@ -28,7 +34,7 @@ public class WebSocketToCustomDecoder extends MessageToMessageDecoder<WebSocketF
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
+        // cause.printStackTrace();
         //System.out.println();
     }
 }

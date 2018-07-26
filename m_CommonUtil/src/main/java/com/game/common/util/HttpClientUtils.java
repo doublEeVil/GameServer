@@ -66,6 +66,7 @@ public class HttpClientUtils {
             client.getHttpConnectionManager().getParams().setSoTimeout(2000);
             method = new PostMethod(url);
             method.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET, "UTF-8");
+            method.getParams().setParameter("content-type", "json");
             method.setRequestBody(data.toArray(new NameValuePair[0]));
             client.executeMethod(method);
             BufferedReader reader = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));

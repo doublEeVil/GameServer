@@ -5,6 +5,7 @@ import com.game.net.server.NetServer;
 import com.game.net.server.ServerType;
 import com.game.world.config.ServerConfig;
 import com.game.world.event.EventManager;
+import com.game.world.listener.WorldServerListener;
 import com.game.world.thread.ShutdownThread;
 import com.game.zookeeper.ZkpRegistry;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -89,6 +90,7 @@ public class WorldServer {
      */
     private void initNetwork() throws Exception{
         NetServer server = new NetServer(serverConfig.getServerPort(), ServerType.TP_WEBSOCKET, SERVER_CTX);
+        server.addListener(new WorldServerListener());
         server.launch();
     }
 

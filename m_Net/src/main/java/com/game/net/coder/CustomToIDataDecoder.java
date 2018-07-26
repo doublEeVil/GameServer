@@ -21,7 +21,7 @@ public class CustomToIDataDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        while (in.readableBytes() > 7) { // 可读部分小于7，直接退出
+        while (in.readableBytes() >= 7) { // 可读部分小于7，直接退出
             in.markReaderIndex();
             byte flag1 = in.readByte(); //固定头1
             byte flag2 = in.readByte(); //固定头2
@@ -61,4 +61,9 @@ public class CustomToIDataDecoder extends ByteToMessageDecoder {
         return Msg2Msg.decodeToIData(dataType, bodyBuf);
     }
 
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        //cause.printStackTrace();
+    }
 }

@@ -14,7 +14,14 @@ public class MessageHandleThread implements Runnable {
     @Override
     public void run() {
         HandlerMonitorService.addMsg(data);
-        ProtocolFactory.getDataHandler(data).handle(data);
+        try {
+            System.out.println("rcv:" + data.getClass());
+            ProtocolFactory.getDataHandler(data).handle(data);
+        } catch (Exception e) {
+            System.err.println("处理消息" + data + " 发生异常");
+            e.printStackTrace();
+        }
+
         data.setHandleOver(true);
     }
 }
